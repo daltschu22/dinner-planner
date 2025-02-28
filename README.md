@@ -135,7 +135,7 @@ The application uses the following configuration files for Vercel deployment:
 - **Phase 2**: In-memory event listing ✅
 - **Phase 3**: Event creation functionality ✅
 - **Phase 4**: Database integration ✅
-- **Phase 5**: Dish sign-up functionality
+- **Phase 5**: Dish sign-up functionality ✅
 - **Phase 6**: UI polish and extra features
 - **Phase 7**: Deployment
 

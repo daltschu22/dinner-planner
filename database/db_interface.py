@@ -95,4 +95,93 @@ class DatabaseInterface(ABC):
         """
         pass
     
-    # Methods for dish sign-ups will be added in Phase 5 
+    # Methods for dish sign-ups - Phase 5
+    
+    @abstractmethod
+    def get_dish_categories(self) -> List[Dict[str, Any]]:
+        """
+        Get all dish categories.
+        
+        Returns:
+            List of category dictionaries with 'id' and 'name' keys
+        """
+        pass
+    
+    @abstractmethod
+    def get_dishes_for_event(self, event_id: int) -> List[Dict[str, Any]]:
+        """
+        Get all dishes signed up for a specific event.
+        
+        Args:
+            event_id: The ID of the event
+            
+        Returns:
+            List of dish dictionaries
+        """
+        pass
+    
+    @abstractmethod
+    def get_dish_by_id(self, dish_id: int) -> Optional[Dict[str, Any]]:
+        """
+        Get a specific dish by ID.
+        
+        Args:
+            dish_id: The ID of the dish to retrieve
+            
+        Returns:
+            Dish dictionary or None if not found
+        """
+        pass
+    
+    @abstractmethod
+    def add_dish(self, event_id: int, name: str, category_id: int, 
+                person_name: str, description: str = "", 
+                serves: int = 0) -> Dict[str, Any]:
+        """
+        Add a new dish to an event.
+        
+        Args:
+            event_id: The ID of the event
+            name: Name of the dish
+            category_id: Category ID of the dish
+            person_name: Name of the person bringing the dish
+            description: Optional description of the dish
+            serves: Optional number of people the dish serves
+            
+        Returns:
+            The newly created dish dictionary
+        """
+        pass
+    
+    @abstractmethod
+    def update_dish(self, dish_id: int, name: str, category_id: int, 
+                   person_name: str, description: str = "", 
+                   serves: int = 0) -> Optional[Dict[str, Any]]:
+        """
+        Update an existing dish.
+        
+        Args:
+            dish_id: The ID of the dish to update
+            name: New name of the dish
+            category_id: New category ID
+            person_name: New name of the person bringing the dish
+            description: New description
+            serves: New number of people the dish serves
+            
+        Returns:
+            Updated dish dictionary or None if dish not found
+        """
+        pass
+    
+    @abstractmethod
+    def delete_dish(self, dish_id: int) -> bool:
+        """
+        Delete a dish from the database.
+        
+        Args:
+            dish_id: The ID of the dish to delete
+            
+        Returns:
+            True if the dish was deleted, False otherwise
+        """
+        pass

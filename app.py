@@ -18,6 +18,24 @@ def home():
     now = datetime.now()
     # Get upcoming events (sorted by date, only future events)
     upcoming_events = db.get_upcoming_events(limit=2)
+    
+    # Get dish information for each event
+    for event in upcoming_events:
+        event_id = event['id']
+        dishes = db.get_dishes_for_event(event_id)
+        event['dishes'] = dishes
+        
+        # Count dishes by category
+        category_counts = {}
+        for dish in dishes:
+            category_name = dish['category_name']
+            if category_name in category_counts:
+                category_counts[category_name] += 1
+            else:
+                category_counts[category_name] = 1
+        
+        event['category_counts'] = category_counts
+    
     return render_template('home.html', now=now, upcoming_events=upcoming_events)
 
 @app.route('/events')
@@ -60,7 +78,23 @@ def event_detail(event_id):
     # Convert the event date string to a datetime object for comparison in the template
     event_date = datetime.strptime(event['date'], '%Y-%m-%d %H:%M')
     
-    return render_template('event_detail.html', now=now, event=event, event_date=event_date)
+    # Get dishes for this event
+    dishes = db.get_dishes_for_event(event_id)
+    
+    # Get all dish categories
+    categories = db.get_dish_categories()
+    
+    # Count dishes by category
+    category_counts = {}
+    for dish in dishes:
+        category_id = dish['category_id']
+        if category_id in category_counts:
+            category_counts[category_id] += 1
+        else:
+            category_counts[category_id] = 1
+    
+    return render_template('event_detail.html', now=now, event=event, event_date=event_date,
+                          dishes=dishes, categories=categories, category_counts=category_counts)
 
 @app.route('/events/add', methods=['GET', 'POST'])
 def event_add():
@@ -147,6 +181,139 @@ def event_delete(event_id):
     
     # GET request - show confirmation page
     return render_template('event_delete.html', now=now, event=event)
+
+# Dish routes - Phase 5
+
+@app.route('/events/<int:event_id>/dishes/add', methods=['GET', 'POST'])
+def dish_add(event_id):
+    now = datetime.now()
+    # Find the event with the given ID
+    event = db.get_event_by_id(event_id)
+    if event is None:
+        flash('Event not found', 'danger')
+        return redirect(url_for('event_list'))
+    
+    # Get all dish categories
+    categories = db.get_dish_categories()
+    
+    if request.method == 'POST':
+        # Get form data
+        name = request.form.get('name')
+        category_id = request.form.get('category_id')
+        person_name = request.form.get('person_name')
+        description = request.form.get('description', '')
+        serves = request.form.get('serves', '0')
+        
+        # Validate form data
+        if not name or not category_id or not person_name:
+            flash('Please fill in all required fields', 'danger')
+            return render_template('dish_form.html', now=now, event=event, categories=categories)
+        
+        # Convert category_id and serves to integers
+        try:
+            category_id = int(category_id)
+            serves = int(serves)
+        except ValueError:
+            flash('Invalid data provided', 'danger')
+            return render_template('dish_form.html', now=now, event=event, categories=categories)
+        
+        # Create new dish
+        try:
+            dish = db.add_dish(event_id, name, category_id, person_name, description, serves)
+            flash('Dish added successfully!', 'success')
+            return redirect(url_for('event_detail', event_id=event_id))
+        except ValueError as e:
+            flash(str(e), 'danger')
+            return render_template('dish_form.html', now=now, event=event, categories=categories)
+    
+    # GET request - show the form
+    return render_template('dish_form.html', now=now, event=event, categories=categories)
+
+@app.route('/dishes/<int:dish_id>/edit', methods=['GET', 'POST'])
+def dish_edit(dish_id):
+    now = datetime.now()
+    # Find the dish with the given ID
+    dish = db.get_dish_by_id(dish_id)
+    if dish is None:
+        flash('Dish not found', 'danger')
+        return redirect(url_for('event_list'))
+    
+    # Find the event for this dish
+    event_id = dish['event_id']
+    event = db.get_event_by_id(event_id)
+    if event is None:
+        flash('Event not found', 'danger')
+        return redirect(url_for('event_list'))
+    
+    # Get all dish categories
+    categories = db.get_dish_categories()
+    
+    if request.method == 'POST':
+        # Get form data
+        name = request.form.get('name')
+        category_id = request.form.get('category_id')
+        person_name = request.form.get('person_name')
+        description = request.form.get('description', '')
+        serves = request.form.get('serves', '0')
+        
+        # Validate form data
+        if not name or not category_id or not person_name:
+            flash('Please fill in all required fields', 'danger')
+            return render_template('dish_form.html', now=now, event=event, dish=dish, categories=categories)
+        
+        # Convert category_id and serves to integers
+        try:
+            category_id = int(category_id)
+            serves = int(serves)
+        except ValueError:
+            flash('Invalid data provided', 'danger')
+            return render_template('dish_form.html', now=now, event=event, dish=dish, categories=categories)
+        
+        # Update dish
+        try:
+            updated_dish = db.update_dish(dish_id, name, category_id, person_name, description, serves)
+            if updated_dish:
+                flash('Dish updated successfully!', 'success')
+                return redirect(url_for('event_detail', event_id=event_id))
+            else:
+                flash('Failed to update dish', 'danger')
+                return redirect(url_for('event_detail', event_id=event_id))
+        except ValueError as e:
+            flash(str(e), 'danger')
+            return render_template('dish_form.html', now=now, event=event, dish=dish, categories=categories)
+    
+    # GET request - show the form with dish data
+    return render_template('dish_form.html', now=now, event=event, dish=dish, categories=categories)
+
+@app.route('/dishes/<int:dish_id>/delete', methods=['GET', 'POST'])
+def dish_delete(dish_id):
+    now = datetime.now()
+    # Find the dish with the given ID
+    dish = db.get_dish_by_id(dish_id)
+    if dish is None:
+        flash('Dish not found', 'danger')
+        return redirect(url_for('event_list'))
+    
+    # Find the event for this dish
+    event_id = dish['event_id']
+    event = db.get_event_by_id(event_id)
+    if event is None:
+        flash('Event not found', 'danger')
+        return redirect(url_for('event_list'))
+    
+    if request.method == 'POST':
+        # Delete the dish
+        success = db.delete_dish(dish_id)
+        
+        if success:
+            flash('Dish deleted successfully!', 'success')
+        else:
+            flash('Failed to delete dish', 'danger')
+        
+        return redirect(url_for('event_detail', event_id=event_id))
+    
+    # GET request - show confirmation page
+    return render_template('dish_delete.html', now=now, event=event, dish=dish)
 
 if __name__ == '__main__':
     app.run(debug=True) 

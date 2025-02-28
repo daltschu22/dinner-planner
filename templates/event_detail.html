@@ -52,19 +52,80 @@
         </div>
 
         <div class="card">
-            <div class="card-header bg-success text-white">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Dish Sign-up</h5>
+                <a href="{{ url_for('dish_add', event_id=event.id) }}" class="btn btn-light btn-sm">
+                    <i class="bi bi-plus-circle"></i> Add Dish
+                </a>
             </div>
             <div class="card-body">
-                <p>This feature will be available soon! You'll be able to sign up to bring dishes to this event.</p>
-                <div class="alert alert-info">
-                    <h5 class="alert-heading">Coming Soon!</h5>
-                    <p>In the next phase, you'll be able to:</p>
-                    <ul>
-                        <li>Sign up to bring dishes</li>
-                        <li>Categorize dishes (appetizers, mains, sides, desserts, drinks)</li>
-                        <li>See what others are bringing</li>
-                    </ul>
+                {% if dishes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Dish</th>
+                                    <th>Category</th>
+                                    <th>Brought By</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dish in dishes %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ dish.name }}</strong>
+                                        {% if dish.description %}
+                                        <div class="small text-muted">{{ dish.description }}</div>
+                                        {% endif %}
+                                        {% if dish.serves > 0 %}
+                                        <div class="small text-muted">Serves: {{ dish.serves }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ dish.category_name }}</td>
+                                    <td>{{ dish.person_name }}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('dish_edit', dish_id=dish.id) }}" class="btn btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{{ url_for('dish_delete', dish_id=dish.id) }}" class="btn btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">No dishes signed up yet!</h5>
+                        <p>Be the first to sign up to bring a dish to this event.</p>
+                        <hr>
+                        <p class="mb-0">
+                            <a href="{{ url_for('dish_add', event_id=event.id) }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Add Dish
+                            </a>
+                        </p>
+                    </div>
+                {% endif %}
+                
+                <div class="mt-4">
+                    <h5>Dish Categories</h5>
+                    <div class="row">
+                        {% for category in categories %}
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-secondary me-2">
+                                    {{ category_counts.get(category.id, 0) }}
+                                </span>
+                                {{ category.name }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>

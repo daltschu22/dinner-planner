@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if dish %}Edit Dish{% else %}Add Dish{% endif %} - Family Dinner Planner
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('event_list') }}">Events</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% if dish %}Edit Dish{% else %}Add Dish{% endif %}</li>
+            </ol>
+        </nav>
+        <h1>{% if dish %}Edit Dish{% else %}Add Dish{% endif %}</h1>
+        <p class="lead">{% if dish %}Update your dish for{% else %}Sign up to bring a dish to{% endif %} <strong>{{ event.title }}</strong></p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Dish Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Dish Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               value="{{ dish.name if dish else '' }}" required>
+                        <div class="invalid-feedback">
+                            Please provide a name for your dish.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
+                        <select class="form-select" id="category_id" name="category_id" required>
+                            <option value="" disabled {% if not dish %}selected{% endif %}>Select a category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" 
+                                        {% if dish and dish.category_id == category.id %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a category.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="person_name" class="form-label">Your Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="person_name" name="person_name" 
+                               value="{{ dish.person_name if dish else '' }}" required>
+                        <div class="invalid-feedback">
+                            Please provide your name.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3">{{ dish.description if dish else '' }}</textarea>
+                        <div class="form-text">Optional: Include ingredients, special dietary info, etc.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="serves" class="form-label">Serves (approx. number of people)</label>
+                        <input type="number" class="form-control" id="serves" name="serves" min="0" 
+                               value="{{ dish.serves if dish else '0' }}">
+                        <div class="form-text">Optional: Helps others know how much food to expect.</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('event_detail', event_id=event.id) }}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            {% if dish %}Update Dish{% else %}Add Dish{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Tips for Great Dishes</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Consider dietary restrictions of attendees
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Include serving utensils if needed
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Label your dish if it contains common allergens
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Consider temperature needs (will it need reheating?)
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Check what others are bringing to avoid duplicates
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">Event Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Date & Time:</strong>
+                    <div>{{ event.date }}</div>
+                </div>
+                <div class="mb-3">
+                    <strong>Location:</strong>
+                    <div>{{ event.location }}</div>
+                </div>
+                <div>
+                    <strong>Description:</strong>
+                    <div>{{ event.description }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %} 

@@ -47,7 +47,53 @@ class SQLiteDatabase(DatabaseInterface):
         )
         ''')
         
-        # Check if we need to add sample data
+        # Create dish categories table
+        self.cursor.execute('''
+        CREATE TABLE IF NOT EXISTS dish_categories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL
+        )
+        ''')
+        
+        # Create dishes table
+        self.cursor.execute('''
+        CREATE TABLE IF NOT EXISTS dishes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            event_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            category_id INTEGER NOT NULL,
+            person_name TEXT NOT NULL,
+            description TEXT,
+            serves INTEGER DEFAULT 0,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE,
+            FOREIGN KEY (category_id) REFERENCES dish_categories (id)
+        )
+        ''')
+        
+        # Check if we need to add sample dish categories
+        self.cursor.execute("SELECT COUNT(*) FROM dish_categories")
+        count = self.cursor.fetchone()[0]
+        
+        # Add sample dish categories if the table is empty
+        if count == 0:
+            categories = [
+                "Appetizer",
+                "Main Dish",
+                "Side Dish",
+                "Salad",
+                "Dessert",
+                "Bread",
+                "Beverage"
+            ]
+            
+            for category in categories:
+                self.cursor.execute(
+                    "INSERT INTO dish_categories (name) VALUES (?)",
+                    (category,)
+                )
+        
+        # Check if we need to add sample data for events
         self.cursor.execute("SELECT COUNT(*) FROM events")
         count = self.cursor.fetchone()[0]
         
@@ -169,6 +215,148 @@ class SQLiteDatabase(DatabaseInterface):
         
         # Delete the event
         self.cursor.execute("DELETE FROM events WHERE id = ?", (event_id,))
+        self.conn.commit()
+        self._disconnect()
+        return True
+    
+    # Methods for dish sign-ups - Phase 5
+    
+    def get_dish_categories(self) -> List[Dict[str, Any]]:
+        """Get all dish categories."""
+        self._connect()
+        self.cursor.execute("SELECT * FROM dish_categories ORDER BY name")
+        categories = [dict(row) for row in self.cursor.fetchall()]
+        self._disconnect()
+        return categories
+    
+    def get_dishes_for_event(self, event_id: int) -> List[Dict[str, Any]]:
+        """Get all dishes signed up for a specific event."""
+        self._connect()
+        self.cursor.execute("""
+            SELECT d.*, c.name as category_name 
+            FROM dishes d
+            JOIN dish_categories c ON d.category_id = c.id
+            WHERE d.event_id = ?
+            ORDER BY c.name, d.name
+        """, (event_id,))
+        dishes = [dict(row) for row in self.cursor.fetchall()]
+        self._disconnect()
+        return dishes
+    
+    def get_dish_by_id(self, dish_id: int) -> Optional[Dict[str, Any]]:
+        """Get a specific dish by ID."""
+        self._connect()
+        self.cursor.execute("""
+            SELECT d.*, c.name as category_name 
+            FROM dishes d
+            JOIN dish_categories c ON d.category_id = c.id
+            WHERE d.id = ?
+        """, (dish_id,))
+        dish = self.cursor.fetchone()
+        self._disconnect()
+        
+        if dish:
+            return dict(dish)
+        return None
+    
+    def add_dish(self, event_id: int, name: str, category_id: int, 
+                person_name: str, description: str = "", 
+                serves: int = 0) -> Dict[str, Any]:
+        """Add a new dish to an event."""
+        self._connect()
+        
+        # Check if the event exists
+        self.cursor.execute("SELECT * FROM events WHERE id = ?", (event_id,))
+        if not self.cursor.fetchone():
+            self._disconnect()
+            raise ValueError(f"Event with ID {event_id} does not exist")
+        
+        # Check if the category exists
+        self.cursor.execute("SELECT * FROM dish_categories WHERE id = ?", (category_id,))
+        if not self.cursor.fetchone():
+            self._disconnect()
+            raise ValueError(f"Category with ID {category_id} does not exist")
+        
+        # Get current timestamp
+        created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Insert the dish
+        self.cursor.execute(
+            """
+            INSERT INTO dishes 
+            (event_id, name, category_id, person_name, description, serves, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (event_id, name, category_id, person_name, description, serves, created_at)
+        )
+        dish_id = self.cursor.lastrowid
+        self.conn.commit()
+        
+        # Fetch the newly created dish with category name
+        self.cursor.execute("""
+            SELECT d.*, c.name as category_name 
+            FROM dishes d
+            JOIN dish_categories c ON d.category_id = c.id
+            WHERE d.id = ?
+        """, (dish_id,))
+        dish = dict(self.cursor.fetchone())
+        
+        self._disconnect()
+        return dish
+    
+    def update_dish(self, dish_id: int, name: str, category_id: int, 
+                   person_name: str, description: str = "", 
+                   serves: int = 0) -> Optional[Dict[str, Any]]:
+        """Update an existing dish."""
+        self._connect()
+        
+        # Check if the dish exists
+        self.cursor.execute("SELECT * FROM dishes WHERE id = ?", (dish_id,))
+        if not self.cursor.fetchone():
+            self._disconnect()
+            return None
+        
+        # Check if the category exists
+        self.cursor.execute("SELECT * FROM dish_categories WHERE id = ?", (category_id,))
+        if not self.cursor.fetchone():
+            self._disconnect()
+            raise ValueError(f"Category with ID {category_id} does not exist")
+        
+        # Update the dish
+        self.cursor.execute(
+            """
+            UPDATE dishes 
+            SET name = ?, category_id = ?, person_name = ?, description = ?, serves = ?
+            WHERE id = ?
+            """,
+            (name, category_id, person_name, description, serves, dish_id)
+        )
+        self.conn.commit()
+        
+        # Fetch the updated dish with category name
+        self.cursor.execute("""
+            SELECT d.*, c.name as category_name 
+            FROM dishes d
+            JOIN dish_categories c ON d.category_id = c.id
+            WHERE d.id = ?
+        """, (dish_id,))
+        dish = dict(self.cursor.fetchone())
+        
+        self._disconnect()
+        return dish
+    
+    def delete_dish(self, dish_id: int) -> bool:
+        """Delete a dish from the database."""
+        self._connect()
+        
+        # Check if the dish exists
+        self.cursor.execute("SELECT * FROM dishes WHERE id = ?", (dish_id,))
+        if not self.cursor.fetchone():
+            self._disconnect()
+            return False
+        
+        # Delete the dish
+        self.cursor.execute("DELETE FROM dishes WHERE id = ?", (dish_id,))
         self.conn.commit()
         self._disconnect()
         return True 
