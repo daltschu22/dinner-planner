@@ -74,10 +74,41 @@ If you prefer to use containers, you can use Podman to run the application:
 
 3. Open your browser and navigate to `http://localhost:5000`
 
+## Deployment to Vercel
+
+This application is configured for deployment on Vercel. To deploy:
+
+1. Sign up for a [Vercel account](https://vercel.com/signup) if you don't have one.
+
+2. Install the Vercel CLI:
+   ```
+   npm install -g vercel
+   ```
+
+3. Login to Vercel:
+   ```
+   vercel login
+   ```
+
+4. Deploy the application:
+   ```
+   vercel
+   ```
+
+5. For production deployment:
+   ```
+   vercel --prod
+   ```
+
+The application uses the following configuration files for Vercel deployment:
+- `vercel.json` - Configuration for the Vercel platform
+- `wsgi.py` - Entry point for the Flask application
+- `.vercelignore` - Specifies files to exclude from deployment
+
 ## Project Phases
 
 - **Phase 1**: Basic Flask application setup ✅
-- **Phase 2**: In-memory event listing
+- **Phase 2**: In-memory event listing ✅
 - **Phase 3**: Event creation functionality
 - **Phase 4**: Database integration
 - **Phase 5**: Dish sign-up functionality

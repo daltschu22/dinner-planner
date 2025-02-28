@@ -11,14 +11,75 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-8 offset-md-2">
         <div class="card mb-4">
-            <div class="card-body text-center">
-                <h5 class="card-title">Upcoming Dinner Events</h5>
-                <p class="card-text">No events scheduled yet. Add your first dinner event to get started!</p>
-                <a href="#" class="btn btn-primary">Add Event</a>
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Upcoming Dinner Events</h5>
+            </div>
+            <div class="card-body">
+                {% if upcoming_events %}
+                    <div class="list-group">
+                        {% for event in upcoming_events %}
+                            <a href="{{ url_for('event_detail', event_id=event.id) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ event.title }}</h5>
+                                    <small>{{ event.date }}</small>
+                                </div>
+                                <p class="mb-1">{{ event.description }}</p>
+                                <small>Location: {{ event.location }}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('event_list') }}" class="btn btn-outline-primary">View All Events</a>
+                    </div>
+                {% else %}
+                    <p class="card-text">No events scheduled yet. Add your first dinner event to get started!</p>
+                    <div class="text-center">
+                        <a href="#" class="btn btn-primary">Add Event</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">How It Works</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="h1 text-primary">
+                            <i class="bi bi-calendar-plus"></i>
+                        </div>
+                        <h5>Create Events</h5>
+                        <p class="small">Schedule your family dinners with date, time, and location.</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="h1 text-primary">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h5>Invite Family</h5>
+                        <p class="small">Share the event with your family members.</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="h1 text-primary">
+                            <i class="bi bi-card-checklist"></i>
+                        </div>
+                        <h5>Coordinate Dishes</h5>
+                        <p class="small">Everyone can sign up to bring specific dishes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 {% endblock %} 
