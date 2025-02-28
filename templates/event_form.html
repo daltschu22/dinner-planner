@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}{% if event %}Edit{% else %}Add{% endif %} Event - Family Dinner Planner{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('event_list') }}">Events</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% if event %}Edit{% else %}Add{% endif %} Event</li>
+            </ol>
+        </nav>
+        <h1>{% if event %}Edit{% else %}Add{% endif %} Event</h1>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Event Details</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('event_edit', event_id=event.id) if event else url_for('event_add') }}">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Event Title</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ event.title if event else '' }}" required>
+                        <div class="form-text">Enter a descriptive title for your event.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date & Time</label>
+                        <input type="datetime-local" class="form-control" id="date" name="date" 
+                               value="{{ event.date.replace(' ', 'T') if event else '' }}" required>
+                        <div class="form-text">When will the event take place?</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location" value="{{ event.location if event else '' }}" required>
+                        <div class="form-text">Where will the event be held?</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3">{{ event.description if event else '' }}</textarea>
+                        <div class="form-text">Provide additional details about the event.</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('event_detail', event_id=event.id) if event else url_for('event_list') }}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Event</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Tips</h5>
+            </div>
+            <div class="card-body">
+                <h6>Creating a Great Event</h6>
+                <ul>
+                    <li>Be specific with your event title</li>
+                    <li>Include complete address information</li>
+                    <li>Specify any special instructions in the description</li>
+                    <li>Consider adding dietary restrictions or theme information</li>
+                </ul>
+                
+                <h6>After Creating Your Event</h6>
+                <p>Once your event is created, you can:</p>
+                <ul>
+                    <li>Share it with family members</li>
+                    <li>Add dishes that people can sign up for</li>
+                    <li>Edit the event details if needed</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+{% endblock %} 

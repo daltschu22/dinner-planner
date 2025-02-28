@@ -36,7 +36,7 @@
                 {% else %}
                     <p class="card-text">No events scheduled yet. Add your first dinner event to get started!</p>
                     <div class="text-center">
-                        <a href="#" class="btn btn-primary">Add Event</a>
+                        <a href="{{ url_for('event_add') }}" class="btn btn-primary">Add Event</a>
                     </div>
                 {% endif %}
             </div>
