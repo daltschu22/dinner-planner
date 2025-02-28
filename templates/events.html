@@ -29,12 +29,56 @@
 <div class="row">
     <div class="col-md-12">
         {% if events %}
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">All Events</h5>
+            <!-- Upcoming Events Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Upcoming Events</h5>
+                    {% if upcoming_count > 0 %}
+                    <span class="badge bg-light text-primary">{{ upcoming_count }}</span>
+                    {% endif %}
                 </div>
                 <div class="list-group list-group-flush">
-                    {% for event in events %}
+                    {% if upcoming_count > 0 %}
+                        {% for i in range(upcoming_count) %}
+                            {% set event = events[i] %}
+                            <a href="{{ url_for('event_detail', event_id=event.id) }}" class="list-group-item list-group-item-action">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3">
+                                        <h5 class="mb-1">{{ event.title }}</h5>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <i class="bi bi-calendar-event"></i> {{ event.date }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <i class="bi bi-geo-alt"></i> {{ event.location }}
+                                    </div>
+                                    <div class="col-md-3 text-end">
+                                        <span class="btn btn-sm btn-outline-primary">View Details</span>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="list-group-item text-center text-muted py-4">
+                            <p>No upcoming events scheduled.</p>
+                            <a href="{{ url_for('event_add') }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-plus-circle"></i> Add New Event
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Past Events Section -->
+            {% if past_count > 0 %}
+            <div class="card">
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Past Events</h5>
+                    <span class="badge bg-light text-secondary">{{ past_count }}</span>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for i in range(upcoming_count, events|length) %}
+                        {% set event = events[i] %}
                         <a href="{{ url_for('event_detail', event_id=event.id) }}" class="list-group-item list-group-item-action">
                             <div class="row align-items-center">
                                 <div class="col-md-3">
@@ -47,13 +91,14 @@
                                     <i class="bi bi-geo-alt"></i> {{ event.location }}
                                 </div>
                                 <div class="col-md-3 text-end">
-                                    <span class="btn btn-sm btn-outline-primary">View Details</span>
+                                    <span class="btn btn-sm btn-outline-secondary">View Details</span>
                                 </div>
                             </div>
                         </a>
                     {% endfor %}
                 </div>
             </div>
+            {% endif %}
         {% else %}
             <div class="alert alert-info">
                 <h4 class="alert-heading">No Events Found</h4>

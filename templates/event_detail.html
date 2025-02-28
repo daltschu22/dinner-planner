@@ -12,7 +12,12 @@
                 <li class="breadcrumb-item active" aria-current="page">{{ event.title }}</li>
             </ol>
         </nav>
-        <h1>{{ event.title }}</h1>
+        <h1>
+            {{ event.title }}
+            {% if now > event_date %}
+            <span class="badge bg-secondary">Past Event</span>
+            {% endif %}
+        </h1>
     </div>
     <div class="col-md-4 text-end d-flex align-items-center justify-content-end">
         <a href="{{ url_for('event_edit', event_id=event.id) }}" class="btn btn-outline-primary me-2">

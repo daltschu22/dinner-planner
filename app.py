@@ -38,9 +38,9 @@ def get_next_id():
 @app.route('/')
 def home():
     now = datetime.now()
-    # Get the next 2 upcoming events (sorted by date)
+    # Get upcoming events (sorted by date, only future events)
     upcoming_events = sorted(
-        [event for event in events], 
+        [event for event in events if datetime.strptime(event['date'], '%Y-%m-%d %H:%M') >= now], 
         key=lambda x: x['date']
     )[:2]
     return render_template('home.html', now=now, upcoming_events=upcoming_events)
@@ -48,9 +48,27 @@ def home():
 @app.route('/events')
 def event_list():
     now = datetime.now()
-    # Sort events by date
-    sorted_events = sorted(events, key=lambda x: x['date'])
-    return render_template('events.html', now=now, events=sorted_events)
+    
+    # Separate events into upcoming and past
+    upcoming_events = []
+    past_events = []
+    
+    for event in events:
+        event_date = datetime.strptime(event['date'], '%Y-%m-%d %H:%M')
+        if event_date >= now:
+            upcoming_events.append(event)
+        else:
+            past_events.append(event)
+    
+    # Sort both lists by date
+    upcoming_events = sorted(upcoming_events, key=lambda x: x['date'])
+    past_events = sorted(past_events, key=lambda x: x['date'], reverse=True)
+    
+    # Combine the lists with upcoming events first
+    sorted_events = upcoming_events + past_events
+    
+    return render_template('events.html', now=now, events=sorted_events, 
+                          upcoming_count=len(upcoming_events), past_count=len(past_events))
 
 @app.route('/events/<int:event_id>')
 def event_detail(event_id):
@@ -60,7 +78,11 @@ def event_detail(event_id):
     if event is None:
         flash('Event not found', 'danger')
         return redirect(url_for('event_list'))
-    return render_template('event_detail.html', now=now, event=event)
+    
+    # Convert the event date string to a datetime object for comparison in the template
+    event_date = datetime.strptime(event['date'], '%Y-%m-%d %H:%M')
+    
+    return render_template('event_detail.html', now=now, event=event, event_date=event_date)
 
 @app.route('/events/add', methods=['GET', 'POST'])
 def event_add():
