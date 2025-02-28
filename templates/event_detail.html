@@ -171,9 +171,12 @@
                     </button>
                 </div>
                 <div class="d-grid gap-2">
-                    <button class="btn btn-primary" type="button">
+                    <button class="btn btn-primary mb-2" type="button">
                         <i class="bi bi-envelope"></i> Email to Family
                     </button>
+                    <a href="#" class="btn btn-success" id="addToGoogleCalendar">
+                        <i class="bi bi-calendar-plus"></i> Add to Google Calendar
+                    </a>
                 </div>
             </div>
         </div>
@@ -196,5 +199,45 @@ function copyEventUrl() {
     // Show a tooltip or some indication that the URL was copied
     alert("Event URL copied to clipboard!");
 }
+
+// Function to create Google Calendar URL
+function createGoogleCalendarUrl() {
+    // Get event details
+    const eventTitle = "{{ event.title }}";
+    const eventLocation = "{{ event.location }}";
+    const eventDescription = "{{ event.description }} - View details: {{ request.url }}";
+    
+    // Parse the event date
+    const eventDateStr = "{{ event.date }}"; // Format: YYYY-MM-DD HH:MM
+    const [datePart, timePart] = eventDateStr.split(' ');
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute] = timePart.split(':');
+    
+    // Create start and end dates (assuming events last 2 hours)
+    const startDate = new Date(year, month - 1, day, hour, minute);
+    const endDate = new Date(startDate.getTime() + (2 * 60 * 60 * 1000)); // Add 2 hours
+    
+    // Format dates for Google Calendar
+    const formatDate = (date) => {
+        return date.toISOString().replace(/-|:|\.\d+/g, '');
+    };
+    
+    const startDateFormatted = formatDate(startDate);
+    const endDateFormatted = formatDate(endDate);
+    
+    // Create Google Calendar URL
+    const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${startDateFormatted}/${endDateFormatted}&details=${encodeURIComponent(eventDescription)}&location=${encodeURIComponent(eventLocation)}&sf=true&output=xml`;
+    
+    return googleCalendarUrl;
+}
+
+// Add event listener to the Google Calendar button
+document.addEventListener('DOMContentLoaded', function() {
+    const calendarButton = document.getElementById('addToGoogleCalendar');
+    if (calendarButton) {
+        calendarButton.href = createGoogleCalendarUrl();
+        calendarButton.target = '_blank';
+    }
+});
 </script>
 {% endblock %} 
