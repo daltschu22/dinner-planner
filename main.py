@@ -127,7 +127,7 @@ def event_list(request: Request):
     )
 
 
-@app.get("/events/{event_id}")
+@app.get("/events/id/{event_id}")
 def event_detail(request: Request, event_id: int):
     event = db.get_event_by_id(event_id)
     if event is None:
@@ -178,7 +178,7 @@ def event_add(
     return RedirectResponse(url=request.url_for("event_detail", event_id=str(event["id"])), status_code=303)
 
 
-@app.get("/events/{event_id}/edit")
+@app.get("/events/id/{event_id}/edit")
 def event_edit_form(request: Request, event_id: int):
     event = db.get_event_by_id(event_id)
     if event is None:
@@ -188,7 +188,7 @@ def event_edit_form(request: Request, event_id: int):
     return render(request, "event_form.html", event=event)
 
 
-@app.post("/events/{event_id}/edit")
+@app.post("/events/id/{event_id}/edit")
 def event_edit(
     request: Request,
     event_id: int,
@@ -216,7 +216,7 @@ def event_edit(
     return RedirectResponse(url=request.url_for("event_list"), status_code=303)
 
 
-@app.get("/events/{event_id}/delete")
+@app.get("/events/id/{event_id}/delete")
 def event_delete_form(request: Request, event_id: int):
     event = db.get_event_by_id(event_id)
     if event is None:
@@ -226,7 +226,7 @@ def event_delete_form(request: Request, event_id: int):
     return render(request, "event_delete.html", event=event)
 
 
-@app.post("/events/{event_id}/delete")
+@app.post("/events/id/{event_id}/delete")
 def event_delete(request: Request, event_id: int):
     event = db.get_event_by_id(event_id)
     if event is None:
@@ -242,7 +242,7 @@ def event_delete(request: Request, event_id: int):
     return RedirectResponse(url=request.url_for("event_list"), status_code=303)
 
 
-@app.get("/events/{event_id}/dishes/add")
+@app.get("/events/id/{event_id}/dishes/add")
 def dish_add_form(request: Request, event_id: int):
     event = db.get_event_by_id(event_id)
     if event is None:
@@ -253,7 +253,7 @@ def dish_add_form(request: Request, event_id: int):
     return render(request, "dish_form.html", event=event, categories=categories)
 
 
-@app.post("/events/{event_id}/dishes/add")
+@app.post("/events/id/{event_id}/dishes/add")
 def dish_add(
     request: Request,
     event_id: int,
