@@ -1,4 +1,5 @@
 import os
+import secrets
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -12,8 +13,45 @@ from database import get_db
 
 load_dotenv()
 
+
+def get_session_secret_key() -> str:
+    configured = os.environ.get("SECRET_KEY")
+    if configured:
+        return configured
+
+    candidate_paths = []
+    secret_file = os.environ.get("SECRET_KEY_FILE")
+    if secret_file:
+        candidate_paths.append(secret_file)
+    if os.path.isdir("/data"):
+        candidate_paths.append("/data/.dinner_secret_key")
+    candidate_paths.append(".dinner_secret_key")
+
+    for path in candidate_paths:
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as handle:
+                existing = handle.read().strip()
+                if existing:
+                    return existing
+
+    generated = secrets.token_urlsafe(48)
+    for path in candidate_paths:
+        try:
+            directory = os.path.dirname(path)
+            if directory:
+                os.makedirs(directory, exist_ok=True)
+            with open(path, "w", encoding="utf-8") as handle:
+                handle.write(generated)
+            os.chmod(path, 0o600)
+            return generated
+        except OSError:
+            continue
+
+    return generated
+
+
 app = FastAPI(title="Family Dinner Planner")
-app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SECRET_KEY", "change-me"))
+app.add_middleware(SessionMiddleware, secret_key=get_session_secret_key())
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 db = get_db()

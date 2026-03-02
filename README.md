@@ -5,8 +5,8 @@ A web application to coordinate family dinner events, track locations, and manag
 ## Technology Stack
 
 - Backend: Python + FastAPI
-- Frontend: HTML, CSS, JavaScript, Bootstrap
-- Database: SQLite (local + mounted volume)
+- Frontend: HTML, CSS, JavaScript, Tailwind CSS
+- Database: SQLite (default) or PostgreSQL
 - Deployment: Coolify / generic container hosts
 
 ## Local Development
@@ -24,6 +24,7 @@ pip install -r requirements.txt
 ```env
 SECRET_KEY=change-me
 APP_ENV=development
+DB_BACKEND=sqlite
 DATABASE_PATH=dinner_planner.db
 ```
 
@@ -65,9 +66,24 @@ DB_BACKEND=redis
 REDIS_URL=redis://...
 ```
 
+## Deployment (PostgreSQL on Coolify)
+
+1. Create a PostgreSQL service in Coolify (internal only, persistent volume enabled).
+2. Set dinner app environment variables:
+
+```env
+SECRET_KEY=your-secret-key
+APP_ENV=production
+DB_BACKEND=postgres
+DATABASE_URL=postgresql://<user>:<password>@<postgres-service-name>:5432/<database>
+```
+
+3. Deploy/redeploy the app.
+
 ## Notes
 
 - SQLite persistence depends on setting `DATABASE_PATH` to your mounted volume path.
+- PostgreSQL uses `DB_BACKEND=postgres` plus `DATABASE_URL`.
 - Redis support remains optional and disabled by default.
 
 ## License
