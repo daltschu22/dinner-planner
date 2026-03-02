@@ -11,7 +11,8 @@
             <span class="mt-2 inline-flex rounded-full bg-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700">Past Event</span>
         {% endif %}
     </div>
-    <div class="flex gap-2">
+    <div class="flex flex-wrap gap-2">
+        <a href="{{ request.url_for('dish_add', event_id=event.id) }}" class="rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-black">Add Dish</a>
         <a href="{{ request.url_for('event_edit', event_id=event.id) }}" class="rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">Edit</a>
         <a href="{{ request.url_for('event_delete', event_id=event.id) }}" class="rounded-md border border-rose-300 px-3 py-2 text-sm text-rose-700 hover:bg-rose-50">Delete</a>
     </div>
