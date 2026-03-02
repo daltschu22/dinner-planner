@@ -7,9 +7,9 @@
     <div class="col-md-8">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('event_list') }}">Events</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ request.url_for('home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ request.url_for('event_list') }}">Events</a></li>
+                <li class="breadcrumb-item"><a href="{{ request.url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Delete Dish</li>
             </ol>
         </nav>
@@ -19,13 +19,7 @@
 
 <div class="row">
     <div class="col-md-8">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        
         
         <div class="card">
             <div class="card-header bg-danger text-white">
@@ -64,7 +58,7 @@
                 
                 <form method="POST">
                     <div class="d-flex justify-content-between">
-                        <a href="{{ url_for('event_detail', event_id=event.id) }}" class="btn btn-outline-secondary">Cancel</a>
+                        <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="btn btn-outline-secondary">Cancel</a>
                         <button type="submit" class="btn btn-danger">
                             <i class="bi bi-trash"></i> Delete Dish
                         </button>
@@ -86,7 +80,7 @@
                     <li>Other attendees will no longer see it in the list</li>
                     <li>You may sign up to bring a different dish instead</li>
                 </ul>
-                <p>If you're just changing details about your dish, consider <a href="{{ url_for('dish_edit', dish_id=dish.id) }}">editing it</a> instead of deleting.</p>
+                <p>If you're just changing details about your dish, consider <a href="{{ request.url_for('dish_edit', dish_id=dish.id) }}">editing it</a> instead of deleting.</p>
             </div>
         </div>
     </div>

@@ -9,22 +9,13 @@
         <p class="lead">View all upcoming family dinner events.</p>
     </div>
     <div class="col-md-4 text-end d-flex align-items-center justify-content-end">
-        <a href="{{ url_for('event_add') }}" class="btn btn-primary">
+        <a href="{{ request.url_for('event_add') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Add New Event
         </a>
     </div>
 </div>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+
 
 <div class="row">
     <div class="col-md-12">
@@ -41,7 +32,7 @@
                     {% if upcoming_count > 0 %}
                         {% for i in range(upcoming_count) %}
                             {% set event = events[i] %}
-                            <a href="{{ url_for('event_detail', event_id=event.id) }}" class="list-group-item list-group-item-action">
+                            <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="list-group-item list-group-item-action">
                                 <div class="row align-items-center">
                                     <div class="col-md-3">
                                         <h5 class="mb-1">{{ event.title }}</h5>
@@ -61,7 +52,7 @@
                     {% else %}
                         <div class="list-group-item text-center text-muted py-4">
                             <p>No upcoming events scheduled.</p>
-                            <a href="{{ url_for('event_add') }}" class="btn btn-sm btn-primary">
+                            <a href="{{ request.url_for('event_add') }}" class="btn btn-sm btn-primary">
                                 <i class="bi bi-plus-circle"></i> Add New Event
                             </a>
                         </div>
@@ -79,7 +70,7 @@
                 <div class="list-group list-group-flush">
                     {% for i in range(upcoming_count, events|length) %}
                         {% set event = events[i] %}
-                        <a href="{{ url_for('event_detail', event_id=event.id) }}" class="list-group-item list-group-item-action">
+                        <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="list-group-item list-group-item-action">
                             <div class="row align-items-center">
                                 <div class="col-md-3">
                                     <h5 class="mb-1">{{ event.title }}</h5>

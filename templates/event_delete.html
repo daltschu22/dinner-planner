@@ -7,9 +7,9 @@
     <div class="col-md-8">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('event_list') }}">Events</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ request.url_for('home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ request.url_for('event_list') }}">Events</a></li>
+                <li class="breadcrumb-item"><a href="{{ request.url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Delete</li>
             </ol>
         </nav>
@@ -35,9 +35,9 @@
                 
                 <p class="text-danger"><strong>Warning:</strong> This action cannot be undone.</p>
                 
-                <form method="POST" action="{{ url_for('event_delete', event_id=event.id) }}">
+                <form method="POST" action="{{ request.url_for('event_delete', event_id=event.id) }}">
                     <div class="d-flex justify-content-between">
-                        <a href="{{ url_for('event_detail', event_id=event.id) }}" class="btn btn-outline-secondary">Cancel</a>
+                        <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="btn btn-outline-secondary">Cancel</a>
                         <button type="submit" class="btn btn-danger">Delete Event</button>
                     </div>
                 </form>

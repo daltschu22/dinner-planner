@@ -4,7 +4,7 @@ A web application to coordinate family dinner events, track locations, and manag
 
 ## Technology Stack
 
-- Backend: Python + Flask
+- Backend: Python + FastAPI
 - Frontend: HTML, CSS, JavaScript, Bootstrap
 - Database: SQLite (local + Railway via mounted volume)
 - Deployment: Railway
@@ -30,10 +30,10 @@ DATABASE_PATH=dinner_planner.db
 5. Run locally:
 
 ```bash
-python app.py
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-6. Open `http://127.0.0.1:5000`.
+6. Open `http://127.0.0.1:8000`.
 
 ## Railway Deployment (Persistent SQLite)
 
@@ -60,7 +60,7 @@ DATABASE_PATH=/data/dinner_planner.db
 Startup command used by Railway:
 
 ```bash
-gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4
+uvicorn main:app --host 0.0.0.0 --port $PORT
 ```
 
 Optional Redis backend (not required):
