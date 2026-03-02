@@ -6,8 +6,8 @@ A web application to coordinate family dinner events, track locations, and manag
 
 - Backend: Python + FastAPI
 - Frontend: HTML, CSS, JavaScript, Bootstrap
-- Database: SQLite (local + Railway via mounted volume)
-- Deployment: Railway
+- Database: SQLite (local + mounted volume)
+- Deployment: Coolify / generic container hosts
 
 ## Local Development
 
@@ -35,17 +35,12 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 6. Open `http://127.0.0.1:8000`.
 
-## Railway Deployment (Persistent SQLite)
-
-This repository includes:
-
-- `railway.toml`
-- `Procfile`
+## Deployment (Persistent SQLite)
 
 ### Deploy steps
 
-1. Create a Railway project from this GitHub repository.
-2. Add a Railway Volume to the service.
+1. Deploy this repository as an application.
+2. Add a persistent volume.
 3. Mount the volume at `/data`.
 4. Set environment variables:
 
@@ -57,7 +52,7 @@ DATABASE_PATH=/data/dinner_planner.db
 
 5. Deploy.
 
-Startup command used by Railway:
+Startup command:
 
 ```bash
 uvicorn main:app --host 0.0.0.0 --port $PORT

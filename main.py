@@ -352,3 +352,10 @@ def dish_delete(request: Request, dish_id: int):
         add_flash(request, "danger", "Failed to delete dish")
 
     return RedirectResponse(url=request.url_for("event_detail", event_id=str(event_id)), status_code=303)
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    port = int(os.environ.get("PORT", "8000"))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)

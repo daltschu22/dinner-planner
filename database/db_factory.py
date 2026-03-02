@@ -40,7 +40,7 @@ class DatabaseFactory:
                 print("Falling back to SQLite database")
                 cls._instance = SQLiteDatabase()
         else:
-            # SQLite is the default for local and Railway deployments.
+            # SQLite is the default for local and volume-backed deployments.
             db_path = os.environ.get('SQLITE_DB_PATH') or os.environ.get('DATABASE_PATH', 'dinner_planner.db')
             cls._instance = SQLiteDatabase(db_path)
             print(f"Using SQLite database at {db_path}")
