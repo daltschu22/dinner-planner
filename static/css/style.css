@@ -5,8 +5,15 @@ html {
 }
 
 body {
-    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
-    background-image: radial-gradient(circle at 20% -10%, rgba(15, 118, 110, 0.06), transparent 40%);
+    font-family: "Manrope", "Segoe UI", system-ui, sans-serif;
+    background-image:
+        radial-gradient(circle at 15% -10%, rgba(14, 165, 164, 0.20), transparent 38%),
+        radial-gradient(circle at 90% -12%, rgba(244, 63, 94, 0.16), transparent 32%),
+        linear-gradient(180deg, #f8fafc 0%, #f3f4f6 100%);
+}
+
+h1, h2, h3 {
+    letter-spacing: -0.02em;
 }
 
 a {

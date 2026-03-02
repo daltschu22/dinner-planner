@@ -9,7 +9,20 @@
         config: {
           theme: {
             extend: {
-              colors: { brand: '#0f766e' },
+              colors: {
+                brand: {
+                  50: '#ecfeff',
+                  100: '#cffafe',
+                  500: '#0ea5a4',
+                  600: '#0f766e',
+                  700: '#115e59',
+                },
+                accent: {
+                  400: '#fb7185',
+                  500: '#f43f5e',
+                  600: '#e11d48',
+                }
+              },
               fontFamily: {
                 sans: ['Manrope', 'ui-sans-serif', 'system-ui'],
                 display: ['Bricolage Grotesque', 'ui-sans-serif', 'system-ui']
@@ -27,13 +40,14 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-900">
-    <header class="border-b border-slate-200 bg-white/90 backdrop-blur">
+    <div class="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[28rem] bg-gradient-to-br from-cyan-200/50 via-teal-100/30 to-rose-100/35"></div>
+    <header class="border-b border-slate-800/40 bg-slate-950/90 text-white backdrop-blur">
         <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-            <a class="font-display text-lg font-semibold tracking-tight text-brand" href="{{ request.url_for('home') }}">Family Dinner Planner</a>
+            <a class="font-display text-lg font-semibold tracking-tight text-cyan-200" href="{{ request.url_for('home') }}">Family Dinner Planner</a>
             <nav class="flex items-center gap-2 text-sm sm:gap-4">
-                <a class="rounded-md px-3 py-1.5 text-slate-700 transition hover:bg-slate-100" href="{{ request.url_for('home') }}">Home</a>
-                <a class="rounded-md px-3 py-1.5 text-slate-700 transition hover:bg-slate-100" href="{{ request.url_for('event_list') }}">Events</a>
-                <a class="rounded-md bg-brand px-3 py-1.5 font-medium text-white transition hover:bg-teal-700" href="{{ request.url_for('event_add') }}">New Event</a>
+                <a class="rounded-md px-3 py-1.5 text-slate-200 transition hover:bg-white/10 hover:text-white" href="{{ request.url_for('home') }}">Home</a>
+                <a class="rounded-md px-3 py-1.5 text-slate-200 transition hover:bg-white/10 hover:text-white" href="{{ request.url_for('event_list') }}">Events</a>
+                <a class="rounded-md bg-gradient-to-r from-brand-500 to-accent-500 px-3 py-1.5 font-medium text-white transition hover:from-brand-600 hover:to-accent-600" href="{{ request.url_for('event_add') }}">New Event</a>
             </nav>
         </div>
     </header>
@@ -43,18 +57,18 @@
             <div class="mb-6 space-y-3">
                 {% for flash in flashes %}
                     {% set classes = 'border-sky-200 bg-sky-50 text-sky-800' %}
-                    {% if flash.category == 'success' %}{% set classes = 'border-emerald-200 bg-emerald-50 text-emerald-800' %}{% endif %}
-                    {% if flash.category == 'danger' %}{% set classes = 'border-rose-200 bg-rose-50 text-rose-800' %}{% endif %}
-                    {% if flash.category == 'warning' %}{% set classes = 'border-amber-200 bg-amber-50 text-amber-800' %}{% endif %}
-                    <div class="rounded-lg border px-4 py-3 text-sm {{ classes }}">{{ flash.message }}</div>
+                    {% if flash.category == 'success' %}{% set classes = 'border-emerald-300 bg-emerald-50 text-emerald-900' %}{% endif %}
+                    {% if flash.category == 'danger' %}{% set classes = 'border-rose-300 bg-rose-50 text-rose-900' %}{% endif %}
+                    {% if flash.category == 'warning' %}{% set classes = 'border-amber-300 bg-amber-50 text-amber-900' %}{% endif %}
+                    <div class="rounded-xl border px-4 py-3 text-sm shadow-sm {{ classes }}">{{ flash.message }}</div>
                 {% endfor %}
             </div>
         {% endif %}
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="border-t border-slate-200 bg-white">
-        <div class="mx-auto w-full max-w-6xl px-4 py-4 text-center text-sm text-slate-500 sm:px-6">
+    <footer class="border-t border-slate-800/40 bg-slate-950 text-slate-300">
+        <div class="mx-auto w-full max-w-6xl px-4 py-4 text-center text-sm sm:px-6">
             © {{ now.year }} Family Dinner Planner
         </div>
     </footer>

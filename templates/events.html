@@ -5,28 +5,28 @@
 {% block content %}
 <section class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
     <div>
-        <h1 class="text-3xl font-bold tracking-tight">Dinner Events</h1>
-        <p class="mt-2 text-slate-600">View all upcoming and past family dinner events.</p>
+        <h1 class="font-display text-4xl font-bold tracking-tight text-slate-900">Dinner Events</h1>
+        <p class="mt-2 text-slate-700">View all upcoming and past family dinner events.</p>
     </div>
-    <a href="{{ request.url_for('event_add') }}" class="inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-700">Add New Event</a>
+    <a href="{{ request.url_for('event_add') }}" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-brand-500 to-accent-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:from-brand-600 hover:to-accent-600">Add New Event</a>
 </section>
 
 {% if events %}
 <div class="space-y-6">
-    <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <section class="rounded-2xl border border-cyan-100 bg-white/95 p-5 shadow-sm">
         <div class="mb-4 flex items-center justify-between">
             <h2 class="text-lg font-semibold">Upcoming Events</h2>
-            <span class="rounded-full bg-brand/10 px-2.5 py-1 text-xs font-medium text-brand">{{ upcoming_count }}</span>
+            <span class="rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-900">{{ upcoming_count }}</span>
         </div>
         {% if upcoming_count > 0 %}
             <div class="space-y-3">
                 {% for i in range(upcoming_count) %}
                     {% set event = events[i] %}
-                    <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="block rounded-lg border border-slate-200 p-4 hover:border-brand hover:bg-slate-50">
+                    <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="block rounded-lg border border-cyan-100 bg-cyan-50/40 p-4 hover:border-cyan-300 hover:bg-cyan-50/70">
                         <div class="grid gap-2 sm:grid-cols-3">
                             <h3 class="font-semibold">{{ event.title }}</h3>
-                            <p class="text-sm text-slate-600">{{ event.date }}</p>
-                            <p class="text-sm text-slate-600 sm:text-right">{{ event.location }}</p>
+                            <p class="text-sm text-slate-700">{{ event.date }}</p>
+                            <p class="text-sm text-slate-700 sm:text-right">{{ event.location }}</p>
                         </div>
                     </a>
                 {% endfor %}
@@ -37,19 +37,19 @@
     </section>
 
     {% if past_count > 0 %}
-    <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <section class="rounded-2xl border border-violet-100 bg-white/95 p-5 shadow-sm">
         <div class="mb-4 flex items-center justify-between">
             <h2 class="text-lg font-semibold">Past Events</h2>
-            <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">{{ past_count }}</span>
+            <span class="rounded-full bg-violet-100 px-2.5 py-1 text-xs font-medium text-violet-900">{{ past_count }}</span>
         </div>
         <div class="space-y-3">
             {% for i in range(upcoming_count, events|length) %}
                 {% set event = events[i] %}
-                <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="block rounded-lg border border-slate-200 p-4 hover:bg-slate-50">
+                <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="block rounded-lg border border-violet-100 bg-violet-50/30 p-4 hover:bg-violet-50/60">
                     <div class="grid gap-2 sm:grid-cols-3">
                         <h3 class="font-semibold">{{ event.title }}</h3>
-                        <p class="text-sm text-slate-600">{{ event.date }}</p>
-                        <p class="text-sm text-slate-600 sm:text-right">{{ event.location }}</p>
+                        <p class="text-sm text-slate-700">{{ event.date }}</p>
+                        <p class="text-sm text-slate-700 sm:text-right">{{ event.location }}</p>
                     </div>
                 </a>
             {% endfor %}
