@@ -3,69 +3,85 @@
 {% block title %}Home - Family Dinner Planner{% endblock %}
 
 {% block content %}
-<section class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-    <div>
-        <h1 class="font-display text-4xl font-bold tracking-tight text-slate-900">Family Dinner Planner</h1>
-        <p class="mt-2 max-w-2xl text-slate-700">Coordinate family dinner events, track locations, and manage what dishes each person is bringing.</p>
+{% set dish_counts = namespace(total=0) %}
+{% for event in upcoming_events %}
+    {% set dish_counts.total = dish_counts.total + (event.dishes|length) %}
+{% endfor %}
+
+<section class="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-teal-900 px-6 py-8 text-white sm:px-8">
+        <h1 class="font-display text-4xl font-bold tracking-tight">Family Dinner Planner</h1>
+        <p class="mt-3 max-w-2xl text-slate-200">Plan shared meals without group-chat chaos. Create events, assign dishes, and keep everyone aligned.</p>
+        <div class="mt-5 flex flex-wrap gap-3">
+            <a href="{{ request.url_for('event_add') }}" class="inline-flex items-center justify-center rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100">Create New Event</a>
+            <a href="{{ request.url_for('event_list') }}" class="inline-flex items-center justify-center rounded-lg border border-white/30 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">Browse All Events</a>
+        </div>
     </div>
-    <a href="{{ request.url_for('event_add') }}" class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-lg ring-1 ring-slate-700 transition hover:bg-black">Create New Event</a>
 </section>
 
-<div class="grid gap-6 lg:grid-cols-3">
-    <section class="space-y-4 lg:col-span-2">
-        <div class="rounded-2xl border border-cyan-100 bg-white/95 p-5 shadow-sm backdrop-blur">
-            <h2 class="text-lg font-semibold">Upcoming Events</h2>
-            {% if upcoming_events %}
-                <div class="mt-4 space-y-4">
-                    {% for event in upcoming_events %}
-                        <article class="rounded-xl border border-cyan-100 bg-cyan-50/40 p-4">
-                            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                                <div class="space-y-1">
-                                    <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="text-lg font-semibold text-slate-900 hover:text-brand">{{ event.title }}</a>
-                                    <p class="text-sm text-slate-700">{{ event.date }} · {{ event.location }}</p>
-                                    <p class="text-sm text-slate-700">{{ event.description }}</p>
-                                </div>
-                                <div class="flex shrink-0 gap-2">
-                                    <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100">Details</a>
-                                    <a href="{{ request.url_for('dish_add', event_id=event.id) }}" class="rounded-md bg-gradient-to-r from-brand-500 to-accent-500 px-3 py-1.5 text-sm text-white hover:from-brand-600 hover:to-accent-600">Add Dish</a>
-                                </div>
-                            </div>
-                            {% if event.dishes %}
-                                <div class="mt-3 flex flex-wrap gap-2 text-xs">
-                                    {% for category, count in event.category_counts.items() %}
-                                        <span class="rounded-full bg-cyan-100 px-2.5 py-1 text-cyan-900">{{ category }}: {{ count }}</span>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                <p class="mt-3 text-xs text-slate-500">No dishes signed up yet.</p>
-                            {% endif %}
-                        </article>
-                    {% endfor %}
-                </div>
-                <a href="{{ request.url_for('event_list') }}" class="mt-4 inline-flex rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100">View All Events</a>
-            {% else %}
-                <p class="mt-3 text-sm text-slate-600">No upcoming events scheduled.</p>
-            {% endif %}
-        </div>
-    </section>
+<section class="mb-6 grid gap-3 sm:grid-cols-3">
+    <article class="rounded-xl border border-cyan-100 bg-cyan-50/60 p-4">
+        <p class="text-xs font-semibold uppercase tracking-wide text-cyan-800">Upcoming</p>
+        <p class="mt-1 font-display text-3xl text-cyan-950">{{ upcoming_events|length }}</p>
+        <p class="mt-1 text-sm text-cyan-900">Events on deck</p>
+    </article>
+    <article class="rounded-xl border border-rose-100 bg-rose-50/60 p-4">
+        <p class="text-xs font-semibold uppercase tracking-wide text-rose-800">Assigned</p>
+        <p class="mt-1 font-display text-3xl text-rose-950">{{ dish_counts.total }}</p>
+        <p class="mt-1 text-sm text-rose-900">Dishes signed up</p>
+    </article>
+    <article class="rounded-xl border border-amber-100 bg-amber-50/60 p-4">
+        <p class="text-xs font-semibold uppercase tracking-wide text-amber-800">Planning Mode</p>
+        <p class="mt-1 font-display text-2xl text-amber-950">Live</p>
+        <p class="mt-1 text-sm text-amber-900">Share links with family</p>
+    </article>
+</section>
 
-    <aside class="space-y-4">
-        <div class="rounded-2xl border border-rose-100 bg-white/95 p-5 shadow-sm backdrop-blur">
-            <h2 class="text-lg font-semibold">Quick Links</h2>
-            <div class="mt-4 space-y-2 text-sm">
-                <a href="{{ request.url_for('event_list') }}" class="block rounded-md border border-rose-200 bg-rose-50/50 px-3 py-2 hover:bg-rose-50">All Events</a>
-            </div>
+<section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-slate-900">Upcoming Events</h2>
+        <a href="{{ request.url_for('event_list') }}" class="text-sm font-medium text-teal-700 hover:text-teal-900">View All</a>
+    </div>
+    {% if upcoming_events %}
+        <div class="grid gap-4 md:grid-cols-2">
+            {% for event in upcoming_events %}
+                <article class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                    <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="font-semibold text-slate-900 hover:text-teal-700">{{ event.title }}</a>
+                    <p class="mt-1 text-sm text-slate-700">{{ event.date }}</p>
+                    <p class="text-sm text-slate-700">{{ event.location }}</p>
+                    {% if event.description %}
+                        <p class="mt-2 text-sm text-slate-600">{{ event.description }}</p>
+                    {% endif %}
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100">Details</a>
+                        <a href="{{ request.url_for('dish_add', event_id=event.id) }}" class="rounded-md bg-slate-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-black">Add Dish</a>
+                    </div>
+                    {% if event.dishes %}
+                        <div class="mt-3 flex flex-wrap gap-2 text-xs">
+                            {% for category, count in event.category_counts.items() %}
+                                <span class="rounded-full bg-slate-200 px-2.5 py-1 text-slate-800">{{ category }}: {{ count }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="mt-3 text-xs text-slate-500">No dishes signed up yet.</p>
+                    {% endif %}
+                </article>
+            {% endfor %}
         </div>
+    {% else %}
+        <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
+            <p class="text-sm text-slate-600">No upcoming events yet.</p>
+            <a href="{{ request.url_for('event_add') }}" class="mt-3 inline-flex rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-black">Create your first event</a>
+        </div>
+    {% endif %}
+</section>
 
-        <div class="rounded-2xl border border-amber-100 bg-white/95 p-5 shadow-sm backdrop-blur">
-            <h2 class="text-lg font-semibold">Tips</h2>
-            <ul class="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
-                <li>Create events in advance.</li>
-                <li>Share event links with family.</li>
-                <li>Coordinate categories for variety.</li>
-                <li>Update dish details if plans change.</li>
-            </ul>
-        </div>
-    </aside>
-</div>
+<section class="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <h2 class="text-lg font-semibold text-slate-900">Planning Notes</h2>
+    <ul class="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
+        <li>Set the event date and location first so everyone has context.</li>
+        <li>Use dish categories to avoid duplicates.</li>
+        <li>Share event detail links with family so updates stay centralized.</li>
+    </ul>
+</section>
 {% endblock %}
