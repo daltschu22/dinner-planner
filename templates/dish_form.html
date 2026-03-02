@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class="mb-6">
-    <p class="text-sm text-slate-500"><a class="hover:text-brand" href="{{ request.url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a> / {% if dish %}Edit Dish{% else %}Add Dish{% endif %}</p>
+    <p class="text-sm text-slate-500"><a class="hover:text-brand-700" href="{{ request.url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a> / {% if dish %}Edit Dish{% else %}Add Dish{% endif %}</p>
     <h1 class="mt-1 text-3xl font-bold tracking-tight">{% if dish %}Edit Dish{% else %}Add Dish{% endif %}</h1>
     <p class="mt-2 text-slate-600">{% if dish %}Update your dish for{% else %}Sign up to bring a dish to{% endif %} <strong>{{ event.title }}</strong>.</p>
 </section>
@@ -15,12 +15,12 @@
         <form method="POST" class="mt-4 space-y-4">
             <div>
                 <label for="name" class="mb-1 block text-sm font-medium">Dish Name</label>
-                <input id="name" name="name" type="text" value="{{ dish.name if dish else '' }}" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
+                <input id="name" name="name" type="text" value="{{ dish.name if dish else '' }}" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
             </div>
 
             <div>
                 <label for="category_id" class="mb-1 block text-sm font-medium">Category</label>
-                <select id="category_id" name="category_id" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
+                <select id="category_id" name="category_id" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
                     <option value="" disabled {% if not dish %}selected{% endif %}>Select a category</option>
                     {% for category in categories %}
                         <option value="{{ category.id }}" {% if dish and dish.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
@@ -30,22 +30,22 @@
 
             <div>
                 <label for="person_name" class="mb-1 block text-sm font-medium">Your Name</label>
-                <input id="person_name" name="person_name" type="text" value="{{ dish.person_name if dish else '' }}" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
+                <input id="person_name" name="person_name" type="text" value="{{ dish.person_name if dish else '' }}" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
             </div>
 
             <div>
                 <label for="description" class="mb-1 block text-sm font-medium">Description</label>
-                <textarea id="description" name="description" rows="4" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">{{ dish.description if dish else '' }}</textarea>
+                <textarea id="description" name="description" rows="4" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20">{{ dish.description if dish else '' }}</textarea>
             </div>
 
             <div>
                 <label for="serves" class="mb-1 block text-sm font-medium">Serves</label>
-                <input id="serves" name="serves" type="number" min="0" value="{{ dish.serves if dish else '0' }}" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
+                <input id="serves" name="serves" type="number" min="0" value="{{ dish.serves if dish else '0' }}" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
             </div>
 
             <div class="flex items-center justify-between">
                 <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">Cancel</a>
-                <button type="submit" class="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700">{% if dish %}Update Dish{% else %}Add Dish{% endif %}</button>
+                <button type="submit" class="rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700">{% if dish %}Update Dish{% else %}Add Dish{% endif %}</button>
             </div>
         </form>
     </section>

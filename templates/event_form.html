@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class="mb-6">
-    <p class="text-sm text-slate-500"><a class="hover:text-brand" href="{{ request.url_for('event_list') }}">Events</a> / {% if event %}Edit{% else %}Add{% endif %}</p>
+    <p class="text-sm text-slate-500"><a class="hover:text-brand-700" href="{{ request.url_for('event_list') }}">Events</a> / {% if event %}Edit{% else %}Add{% endif %}</p>
     <h1 class="mt-1 text-3xl font-bold tracking-tight">{% if event %}Edit{% else %}Add{% endif %} Event</h1>
 </section>
 
@@ -14,23 +14,23 @@
         <form class="mt-4 space-y-4" method="POST" action="{{ request.url_for('event_edit', event_id=event.id) if event else request.url_for('event_add') }}">
             <div>
                 <label for="title" class="mb-1 block text-sm font-medium">Event Title</label>
-                <input id="title" name="title" type="text" value="{{ event.title if event else '' }}" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
+                <input id="title" name="title" type="text" value="{{ event.title if event else '' }}" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
             </div>
             <div>
                 <label for="date" class="mb-1 block text-sm font-medium">Date & Time</label>
-                <input id="date" name="date" type="datetime-local" value="{{ event.date.replace(' ', 'T') if event else '' }}" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
+                <input id="date" name="date" type="datetime-local" value="{{ event.date.replace(' ', 'T') if event else '' }}" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
             </div>
             <div>
                 <label for="location" class="mb-1 block text-sm font-medium">Location</label>
-                <input id="location" name="location" type="text" value="{{ event.location if event else '' }}" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
+                <input id="location" name="location" type="text" value="{{ event.location if event else '' }}" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
             </div>
             <div>
                 <label for="description" class="mb-1 block text-sm font-medium">Description</label>
-                <textarea id="description" name="description" rows="4" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">{{ event.description if event else '' }}</textarea>
+                <textarea id="description" name="description" rows="4" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20">{{ event.description if event else '' }}</textarea>
             </div>
             <div class="flex items-center justify-between">
                 <a href="{{ request.url_for('event_detail', event_id=event.id) if event else request.url_for('event_list') }}" class="rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">Cancel</a>
-                <button type="submit" class="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700">Save Event</button>
+                <button type="submit" class="rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700">Save Event</button>
             </div>
         </form>
     </section>

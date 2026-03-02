@@ -5,7 +5,7 @@
 {% block content %}
 <section class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
     <div>
-        <p class="text-sm text-slate-500"><a class="hover:text-brand" href="{{ request.url_for('event_list') }}">Events</a> / {{ event.title }}</p>
+        <p class="text-sm text-slate-500"><a class="hover:text-brand-700" href="{{ request.url_for('event_list') }}">Events</a> / {{ event.title }}</p>
         <h1 class="mt-1 text-3xl font-bold tracking-tight">{{ event.title }}</h1>
         {% if now > event_date %}
             <span class="mt-2 inline-flex rounded-full bg-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700">Past Event</span>
@@ -31,7 +31,7 @@
         <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-lg font-semibold">Dish Sign-up</h2>
-                <a href="{{ request.url_for('dish_add', event_id=event.id) }}" class="rounded-md bg-brand px-3 py-1.5 text-sm text-white hover:bg-teal-700">Add Dish</a>
+                <a href="{{ request.url_for('dish_add', event_id=event.id) }}" class="rounded-md bg-brand-600 px-3 py-1.5 text-sm text-white hover:bg-teal-700">Add Dish</a>
             </div>
 
             {% if dishes %}
