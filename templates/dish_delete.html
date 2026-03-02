@@ -3,90 +3,34 @@
 {% block title %}Delete Dish - Family Dinner Planner{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-md-8">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ request.url_for('home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ request.url_for('event_list') }}">Events</a></li>
-                <li class="breadcrumb-item"><a href="{{ request.url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Delete Dish</li>
-            </ol>
-        </nav>
-        <h1>Delete Dish</h1>
-    </div>
-</div>
+<section class="mb-6">
+    <p class="text-sm text-slate-500"><a class="hover:text-brand" href="{{ request.url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a> / Delete Dish</p>
+    <h1 class="mt-1 text-3xl font-bold tracking-tight">Delete Dish</h1>
+</section>
 
-<div class="row">
-    <div class="col-md-8">
-        
-        
-        <div class="card">
-            <div class="card-header bg-danger text-white">
-                <h5 class="mb-0">Confirm Deletion</h5>
-            </div>
-            <div class="card-body">
-                <div class="alert alert-warning">
-                    <h5 class="alert-heading">Are you sure you want to delete this dish?</h5>
-                    <p>This action cannot be undone.</p>
-                </div>
-                
-                <div class="mb-4">
-                    <h5>Dish Details:</h5>
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <strong>Name:</strong> {{ dish.name }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Category:</strong> {{ dish.category_name }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Brought by:</strong> {{ dish.person_name }}
-                        </li>
-                        {% if dish.description %}
-                        <li class="list-group-item">
-                            <strong>Description:</strong> {{ dish.description }}
-                        </li>
-                        {% endif %}
-                        {% if dish.serves > 0 %}
-                        <li class="list-group-item">
-                            <strong>Serves:</strong> {{ dish.serves }} people
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
-                
-                <form method="POST">
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="btn btn-outline-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash"></i> Delete Dish
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Information</h5>
-            </div>
-            <div class="card-body">
-                <p>When you delete a dish:</p>
-                <ul>
-                    <li>It will be permanently removed from the event</li>
-                    <li>Other attendees will no longer see it in the list</li>
-                    <li>You may sign up to bring a different dish instead</li>
-                </ul>
-                <p>If you're just changing details about your dish, consider <a href="{{ request.url_for('dish_edit', dish_id=dish.id) }}">editing it</a> instead of deleting.</p>
-            </div>
-        </div>
-    </div>
+<div class="grid gap-6 lg:grid-cols-3">
+    <section class="lg:col-span-2 rounded-xl border border-rose-200 bg-white p-5 shadow-sm">
+        <h2 class="text-lg font-semibold text-rose-700">Confirm Deletion</h2>
+        <p class="mt-3 text-sm text-slate-700">This action cannot be undone.</p>
+
+        <dl class="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm">
+            <div class="py-1"><dt class="inline font-medium">Name:</dt> <dd class="inline">{{ dish.name }}</dd></div>
+            <div class="py-1"><dt class="inline font-medium">Category:</dt> <dd class="inline">{{ dish.category_name }}</dd></div>
+            <div class="py-1"><dt class="inline font-medium">Brought by:</dt> <dd class="inline">{{ dish.person_name }}</dd></div>
+            {% if dish.description %}<div class="py-1"><dt class="inline font-medium">Description:</dt> <dd class="inline">{{ dish.description }}</dd></div>{% endif %}
+            {% if dish.serves > 0 %}<div class="py-1"><dt class="inline font-medium">Serves:</dt> <dd class="inline">{{ dish.serves }} people</dd></div>{% endif %}
+        </dl>
+
+        <form method="POST" class="mt-5 flex items-center justify-between">
+            <a href="{{ request.url_for('event_detail', event_id=event.id) }}" class="rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">Cancel</a>
+            <button type="submit" class="rounded-md bg-rose-600 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-700">Delete Dish</button>
+        </form>
+    </section>
+
+    <aside class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 class="text-lg font-semibold">Information</h2>
+        <p class="mt-3 text-sm text-slate-700">If you only need to change details, edit the dish instead of deleting it.</p>
+        <a href="{{ request.url_for('dish_edit', dish_id=dish.id) }}" class="mt-3 inline-flex rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">Edit Dish</a>
+    </aside>
 </div>
 {% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-{% endblock %} 
