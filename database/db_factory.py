@@ -27,12 +27,11 @@ class DatabaseFactory:
         if cls._instance is not None:
             return cls._instance
         
-        # Check if we're running on Vercel or if REDIS_URL is set
-        is_vercel = os.environ.get('VERCEL', '0') == '1'
+        backend = os.environ.get('DB_BACKEND', 'sqlite').lower()
         has_redis_url = 'REDIS_URL' in os.environ
-        
-        # If we're on Vercel or have a Redis URL, and Redis is available, use it
-        if (is_vercel or has_redis_url) and REDIS_AVAILABLE:
+
+        # Optional Redis backend if explicitly enabled.
+        if backend == 'redis' and has_redis_url and REDIS_AVAILABLE:
             try:
                 cls._instance = KVDatabase()
                 print("Using Redis database")
@@ -41,8 +40,8 @@ class DatabaseFactory:
                 print("Falling back to SQLite database")
                 cls._instance = SQLiteDatabase()
         else:
-            # Use SQLite for local development
-            db_path = os.environ.get('SQLITE_DB_PATH', 'dinner_planner.db')
+            # SQLite is the default for local and Railway deployments.
+            db_path = os.environ.get('SQLITE_DB_PATH') or os.environ.get('DATABASE_PATH', 'dinner_planner.db')
             cls._instance = SQLiteDatabase(db_path)
             print(f"Using SQLite database at {db_path}")
         

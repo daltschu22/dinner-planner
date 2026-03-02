@@ -6,7 +6,7 @@ from datetime import datetime
 from .db_interface import DatabaseInterface
 
 class KVDatabase(DatabaseInterface):
-    """Redis implementation of the database interface for Vercel deployment."""
+    """Redis implementation of the database interface."""
     
     def __init__(self):
         """Initialize the Redis database connection."""

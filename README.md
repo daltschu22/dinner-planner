@@ -1,143 +1,79 @@
 # Family Dinner Planner
 
-A web application to help coordinate family dinner events, track locations, and manage what dishes each person is bringing.
-
-## Features (Planned)
-
-- Create and manage dinner events with date, time, and location
-- Sign up to bring specific dishes to events
-- Categorize dishes (appetizers, mains, sides, desserts, drinks)
-- View upcoming events and what dishes are planned
+A web application to coordinate family dinner events, track locations, and manage what dishes each person is bringing.
 
 ## Technology Stack
 
-- **Backend**: Python with Flask
-- **Frontend**: HTML, CSS, JavaScript, Bootstrap
-- **Database**: 
-  - SQLite (local development)
-  - Redis (production on Vercel)
-- **Deployment**: Vercel
+- Backend: Python + FastAPI
+- Frontend: HTML, CSS, JavaScript, Bootstrap
+- Database: SQLite (local + Railway via mounted volume)
+- Deployment: Railway
 
-## Local Development Setup
+## Local Development
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/dinner-planner.git
-   cd dinner-planner
-   ```
-
-2. Create and activate a virtual environment:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
+1. Clone the repository.
+2. Create and activate a virtual environment.
 3. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
 
-4. Create a `.env` file from the example:
-   ```
-   cp .env.example .env
-   ```
-   
-   Edit the `.env` file to set your secret key and other configuration options.
+```bash
+pip install -r requirements.txt
+```
 
-5. Run the application:
-   ```
-   python app.py
-   ```
+4. Create `.env` (or copy from `.env.example`) and set:
 
-6. Open your browser and navigate to `http://127.0.0.1:5000`
+```env
+SECRET_KEY=change-me
+APP_ENV=development
+DATABASE_PATH=dinner_planner.db
+```
 
-### Container Setup (Using Podman)
+5. Run locally:
 
-If you prefer to use containers, you can use Podman to run the application:
+```bash
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
 
-1. Make sure Podman is installed on your system.
+6. Open `http://127.0.0.1:8000`.
 
-2. Use the provided script to manage the container:
-   ```
-   # Start the application
-   ./podman.sh start
-   
-   # View container logs
-   ./podman.sh logs
-   
-   # Check container status
-   ./podman.sh status
-   
-   # Stop the application
-   ./podman.sh stop
-   
-   # Restart the application
-   ./podman.sh restart
-   
-   # Clean up CNI configurations (if you see CNI warnings)
-   ./podman.sh cleanup
-   
-   # Show help
-   ./podman.sh help
-   ```
+## Railway Deployment (Persistent SQLite)
 
-3. Open your browser and navigate to `http://localhost:5000`
+This repository includes:
 
-## Deployment to Vercel
+- `railway.toml`
+- `Procfile`
 
-This application is configured for deployment on Vercel. To deploy:
+### Deploy steps
 
-1. Sign up for a [Vercel account](https://vercel.com/signup) if you don't have one.
+1. Create a Railway project from this GitHub repository.
+2. Add a Railway Volume to the service.
+3. Mount the volume at `/data`.
+4. Set environment variables:
 
-2. Set up a Redis database:
-   - You can use [Redis Cloud](https://redis.com/try-free/) which offers a free tier
-   - Or any other Redis provider that gives you a connection URL
+```env
+SECRET_KEY=your-secret-key
+APP_ENV=production
+DATABASE_PATH=/data/dinner_planner.db
+```
 
-3. Install the Vercel CLI:
-   ```
-   npm install -g vercel
-   ```
+5. Deploy.
 
-4. Login to Vercel:
-   ```
-   vercel login
-   ```
+Startup command used by Railway:
 
-5. Set up environment variables in Vercel:
-   ```
-   vercel env add REDIS_URL
-   ```
-   When prompted, enter your Redis connection URL (e.g., `redis://username:password@host:port`).
-   
-   Also add a secure SECRET_KEY:
-   ```
-   vercel env add SECRET_KEY
-   ```
+```bash
+uvicorn main:app --host 0.0.0.0 --port $PORT
+```
 
-6. Deploy the application:
-   ```
-   vercel
-   ```
+Optional Redis backend (not required):
 
-7. For production deployment:
-   ```
-   vercel --prod
-   ```
+```env
+DB_BACKEND=redis
+REDIS_URL=redis://...
+```
 
-The application uses the following configuration files for Vercel deployment:
-- `vercel.json` - Configuration for the Vercel platform
-- `api/index.py` - Entry point for the Flask application
-- `.vercelignore` - Specifies files to exclude from deployment
+## Notes
 
-## Project Phases
-
-- **Phase 1**: Basic Flask application setup ✅
-- **Phase 2**: In-memory event listing ✅
-- **Phase 3**: Event creation functionality ✅
-- **Phase 4**: Database integration ✅
-- **Phase 5**: Dish sign-up functionality ✅
-- **Phase 6**: UI polish and extra features
-- **Phase 7**: Deployment
+- SQLite persistence depends on setting `DATABASE_PATH` to your mounted volume path.
+- Redis support remains optional and disabled by default.
 
 ## License
 
